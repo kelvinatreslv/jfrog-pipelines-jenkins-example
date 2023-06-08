@@ -1,10 +1,11 @@
 pipeline {
   agent {
-    kubernetes {
-        label 'go-pipeline-pod'
-        yamlFile 'podTemplate/go-pipeline-pod.yaml'
-        idleMinutes 120
-    }
+    any
+    // kubernetes {
+    //     label 'go-pipeline-pod'
+    //     yamlFile 'podTemplate/go-pipeline-pod.yaml'
+    //     idleMinutes 120
+    // }
   }
   stages {
     stage('Build') {
@@ -45,7 +46,7 @@ pipeline {
       }
       steps {
         container('jfrog-cli-go'){
-            withCredentials([usernamePassword(credentialsId: 'gociexamplerepo', passwordVariable: 'APIKEY', usernameVariable: 'USER')]) {
+            withCredentials([usernamePassword(credentialsId: 'jfrog-user-pass', passwordVariable: 'APIKEY', usernameVariable: 'USER')]) {
                 sh "jfrog rt bce $JOB_NAME $BUILD_NUMBER"
                 sh "jfrog rt bag $JOB_NAME $BUILD_NUMBER"
                 sh "jfrog rt bad $JOB_NAME $BUILD_NUMBER \"go.*\""
